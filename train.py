@@ -19,7 +19,9 @@ hidden_dim = 64
 learning_rate = 0.001
 
 # Generates training data
-X_train, y_train = create_train_dataset()
+X_train_list, y_train_list = create_train_dataset()
+X_train = np.array(X_train_list)
+y_train = np.array(y_train_list)
 n_train = 100000
 n_digits = 11
 
@@ -74,7 +76,6 @@ for epoch in range(epochs):
     count = 0
     idx = np.random.permutation(n_train)
     for i in range(0, n_train, batch_size):
-        
         x_batch = torch.from_numpy(X_train[idx[i:i+batch_size]]).to(device)
         y_batch = torch.from_numpy(y_train[idx[i:i+batch_size]]).float().unsqueeze(1).to(device)
         optimizer.zero_grad()
