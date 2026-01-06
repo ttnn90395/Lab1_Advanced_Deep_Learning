@@ -13,6 +13,7 @@ def create_train_dataset():
         label = np.sum(card)
         X_train.append(card)
         y_train.append(label)
+        print(card, label)
     
     return X_train, y_train
 
@@ -30,5 +31,6 @@ def create_test_dataset():
             label = np.sum(card)
             X_test.append(card)
             y_test.append(label)
+            print(card, label)
 
     return X_test, y_test
