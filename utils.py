@@ -24,14 +24,14 @@ def create_test_dataset():
 
     n_test_classes = 20
     n_test_per_class = 10000
-    X_test_tensors = [] # Temporary list to hold tensors
-    y_test_tensors = [] # Temporary list to hold tensors
+    X_test_tensors = [] 
+    y_test_tensors = [] 
     for i in range(n_test_classes):
-        card_count = np.random.randint(1, 5*(i+1) + 1)
+        card_count = 5*(i+1)
         for j in range(n_test_per_class):
             card = np.random.randint(1, 11, size=card_count)
             label = np.sum(card)
-            X_test_tensors.append(torch.tensor(card, dtype=torch.long)) # Return list of tensors of varying lengths
+            X_test_tensors.append(torch.tensor(card, dtype=torch.long)) 
             y_test_tensors.append(torch.tensor(label, dtype=torch.float32))
             #print(card, label)
 
