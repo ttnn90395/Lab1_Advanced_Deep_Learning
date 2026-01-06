@@ -30,8 +30,7 @@ def create_test_dataset():
         for j in range(n_test_per_class):
             card = np.random.randint(1, 11, size=card_count)
             label = np.sum(card)
-            padded_array = np.pad(card, (0, 10 - card_count), mode='constant', constant_values=0)
-            X_test.append(padded_array)
+            X_test.append(card)
             y_test.append(label)
             #print(card, label)
 
