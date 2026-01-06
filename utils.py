@@ -20,10 +20,16 @@ def create_train_dataset():
 
 def create_test_dataset():
     
-    ############## Task 2
-    
-    ##################
-    # your code here #
-    ##################
+    n_test_classes = 20
+    n_test_per_class = 10000
+    X_test = []
+    y_test = []
+    for i in range(n_test_classes):
+        card_count = np.random.randint(1, 5*(i+1) + 1)
+        for j in range(n_test_per_class):
+            card = np.random.choice(range(1, 11), size=card_count, replace=False)
+            label = np.sum(card)
+            X_test.append(card)
+            y_test.append(label)
 
     return X_test, y_test
