@@ -1,4 +1,3 @@
-
 import time
 import numpy as np
 import torch
@@ -38,13 +37,8 @@ for epoch in range(epochs):
     count = 0
     idx = np.random.permutation(n_train)
     for i in range(0, n_train, batch_size):
-        
-        ############## Task 5
-    
-        ##################
-        # your code here #
-        ##################
-        
+        x_batch = torch.from_numpy(X_train[idx[i:i+batch_size]]).to(device)
+        y_batch = torch.from_numpy(y_train[idx[i:i+batch_size]]).float().unsqueeze(1).to(device)
         optimizer.zero_grad()
         output = deepsets(x_batch)
         loss = loss_function(output, y_batch)
@@ -80,13 +74,9 @@ for epoch in range(epochs):
     count = 0
     idx = np.random.permutation(n_train)
     for i in range(0, n_train, batch_size):
-    
-        ############## Task 5
         
-        ##################
-        # your code here #
-        ##################
-        
+        x_batch = torch.from_numpy(X_train[idx[i:i+batch_size]]).to(device)
+        y_batch = torch.from_numpy(y_train[idx[i:i+batch_size]]).float().unsqueeze(1).to(device)
         optimizer.zero_grad()
         output = lstm(x_batch)
         loss = loss_function(output, y_batch)
