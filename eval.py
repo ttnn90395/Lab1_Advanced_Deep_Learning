@@ -1,10 +1,9 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, mean_absolute_error
 import torch
 
-from utils import create_test_dataset
+from utils import create_train_dataset
 from models import DeepSets, LSTM
 
 # Initializes device
@@ -42,32 +41,49 @@ for i in range(len(cards)):
     y_pred_deepsets = list()
     y_pred_lstm = list()
     for j in range(0, n_samples_per_card, batch_size):
-        
-        ############## Task 6
-    
-        ##################
-        # your code here #
-        ##################
-        
+
+        x_batch_np = X_test[i][j:j+batch_size]
+        y_batch_np = y_test[i][j:j+batch_size]
+
+        x_batch = torch.tensor(x_batch_np, dtype=torch.long).to(device)
+        # y_batch = torch.tensor(y_batch_np, dtype=torch.float32).to(device) # Not needed for prediction
+
+        with torch.no_grad():
+            output_deepsets = deepsets(x_batch)
+            output_lstm = lstm(x_batch)
+
+        y_pred_deepsets.append(output_deepsets.cpu())
+        y_pred_lstm.append(output_lstm.cpu())
+
     y_pred_deepsets = torch.cat(y_pred_deepsets)
     y_pred_deepsets = y_pred_deepsets.detach().cpu().numpy()
-    
-    acc_deepsets = #your code here
-    mae_deepsets = #your code here
-    results['deepsets']['acc'].append(acc_deepsets)
+
+    # acc_deepsets = # Accuracy is not suitable for this regression task
+    mae_deepsets = mean_absolute_error(y_test[i], y_pred_deepsets)
     results['deepsets']['mae'].append(mae_deepsets)
-    
+
     y_pred_lstm = torch.cat(y_pred_lstm)
     y_pred_lstm = y_pred_lstm.detach().cpu().numpy()
-    
-    acc_lstm = #your code here
-    mae_lstm = #your code here
-    results['lstm']['acc'].append(acc_lstm)
+
+    # acc_lstm = # Accuracy is not suitable for this regression task
+    mae_lstm = mean_absolute_error(y_test[i], y_pred_lstm)
     results['lstm']['mae'].append(mae_lstm)
 
 
-############## Task 7
-    
-##################
-# your code here #
-##################
+
+plt.figure(figsize=(12, 7))
+plt.plot(cards, results['deepsets']['mae'], label='DeepSets MAE', marker='o')
+plt.plot(cards, results['lstm']['mae'], label='LSTM MAE', marker='o')
+plt.xlabel('Number of Cards (Cardinality)')
+plt.ylabel('Mean Absolute Error (MAE)')
+plt.title('MAE vs. Cardinality for DeepSets and LSTM')
+plt.xticks(cards)
+plt.legend()
+plt.grid(True)
+plt.show()
+
+print("\n--- Summary of Results ---")
+print("Cardinality | DeepSets MAE | LSTM MAE")
+print("-----------------------------------")
+for idx, card in enumerate(cards):
+    print(f"{card:<11} | {results['deepsets']['mae'][idx]:<12.4f} | {results['lstm']['mae'][idx]:<9.4f}")

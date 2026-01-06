@@ -24,15 +24,20 @@ def create_test_dataset():
 
     n_test_classes = 20
     n_test_per_class = 10000
-    X_test_tensors = [] 
-    y_test_tensors = [] 
+    X_test_list_of_np_arrays = []
+    y_test_list_of_np_arrays = []
+
     for i in range(n_test_classes):
         card_count = 5*(i+1)
+        current_X_batch = []
+        current_y_batch = []
         for j in range(n_test_per_class):
             card = np.random.randint(1, 11, size=card_count)
             label = np.sum(card)
-            X_test_tensors.append(torch.tensor(card, dtype=torch.long)) 
-            y_test_tensors.append(torch.tensor(label, dtype=torch.float32))
-            #print(card, label)
+            current_X_batch.append(card)
+            current_y_batch.append(label)
 
-    return X_test_tensors, y_test_tensors
+        X_test_list_of_np_arrays.append(np.array(current_X_batch))
+        y_test_list_of_np_arrays.append(np.array(current_y_batch, dtype=np.float32))
+
+    return X_test_list_of_np_arrays, y_test_list_of_np_arrays
