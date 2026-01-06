@@ -14,7 +14,7 @@ def create_train_dataset():
         padded_array = np.pad(card, (0, 10 - card_count), mode='constant', constant_values=0)
         X_train.append(padded_array)
         y_train.append(label)
-        #print(card, label)
+        print(padded_array, label)
     
     return X_train, y_train
 
