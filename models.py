@@ -1,4 +1,3 @@
-
 import torch
 import torch.nn as nn
 
@@ -11,13 +10,12 @@ class DeepSets(nn.Module):
         self.tanh = nn.Tanh()
 
     def forward(self, x):
-        
-        ############## Task 3
-    
-        ##################
-        # your code here #
-        ##################
-        
+
+        embedded_x = self.embedding(x)
+        fc1_output = self.tanh(self.fc1(embedded_x))
+        sum = torch.sum(fc1_output, dim=1)
+        x = self.fc2(sum)
+
         return x.squeeze()
 
 
@@ -31,10 +29,8 @@ class LSTM(nn.Module):
 
     def forward(self, x):
         
-        ############## Task 4
-    
-        ##################
-        # your code here #
-        ##################
+        embedded_x = self.embedding(x)
+        lstm_output, (h_n, c_n) = self.lstm(embedded_x)
+        x = self.fc(h_n[-1])
         
         return x.squeeze()
