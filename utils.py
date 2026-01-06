@@ -5,13 +5,16 @@ import numpy as np
 def create_train_dataset():
     n_train = 100000
     max_train_card = 10
+    X_train = []
+    y_train = []
 
-    ############## Task 1
+    for i in range(n_train):
+        card_count = np.random.randint(1, max_train_card + 1)
+        card = np.random.choice(range(1, 11), size=card_count, replace=False)
+        label = np.sum(card)
+        X_train.append(card)
+        y_train.append(label)
     
-    ##################
-    # your code here #
-    ##################
-
     return X_train, y_train
 
 
