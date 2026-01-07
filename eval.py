@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, mean_absolute_error
 import torch
 
-from utils import create_train_dataset
+from utils import create_test_dataset
 from models import DeepSets, LSTM
 
 # Initializes device
@@ -46,7 +46,7 @@ for i in range(len(cards)):
         y_batch_np = y_test[i][j:j+batch_size]
 
         x_batch = torch.tensor(x_batch_np, dtype=torch.long).to(device)
-        y_batch = torch.tensor(y_batch_np, dtype=torch.float32).to(device) # Not needed for prediction
+        y_batch = torch.tensor(y_batch_np, dtype=torch.float32).to(device) 
 
         with torch.no_grad():
             output_deepsets = deepsets(x_batch)
