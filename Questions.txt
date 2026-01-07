@@ -1,0 +1,60 @@
+Q1 
+
+The forward pass of the DeepSets model, adjusted for ReLU, can be conceptually written as: 
+        Output = fc2(torch.sum(ReLU(fc1(embedding(input))), dim=1))
+
+We want to have Output = sum(input_integers):
+
+First, the embedding for each integer k should represent k itself so that fc1 can easily extract it.
+Let E the embedding matrix of shape input_dim \times embedding_dim. 
+For each integer from 0 to 10, we therefore want to have :
+E_{k,0} = k
+E_{k,p} = 0 for other p.
+
+Second, fc1 with RELU should transform the embedding (k,0, \cdots, 0) 
+in such way that it enables us to extract our label : our sum.
+Note W_1,b_1 respectively the weight matrix of shape hidden_dim \times embedding_dim and
+the bias vector of shape (hidden_dim)
+We hence want to have : 
+(W_1)_{0,0} = 1
+(W_1)_{i,j} = 0 for all other (i,j)
+(b_1)_{i} = 0 for all in
+Indeed, when fc1 receives [k, 0, ..., 0]:   W_1 * [k, 0, ..., 0]^T + b_1 = [k, 0, ..., 0]^T.
+After applying RELU : ReLU([k, 0, ..., 0]^T) = [k, 0, ..., 0]^T (since k ≥ 0). 
+This ensures padding (0) correctly contributes [0, ..., 0] and other numbers k contribute [k, 0, ..., 0].
+
+Thirdly the summation Layer takes a set of inputs X = {card_1, card_2, ..., card_m}, 
+and outputs [sum(card_1, ..., card_m), 0, ..., 0].
+
+Finally fc2 takes the summed vector [total_sum, 0, ..., 0] and outputs total_sum.
+
+In order to do so we can take : 
+(W_2)_{0, 0} = 1 (the first element of W2 is 1).
+(W_2)_{0, p} = 0 for p ∈ {1, ..., hidden_dim - 1} .
+b2 is 0.
+with W_2 the weight matrix of shape 1 \times hidden_dim and b_1 the bias vector of shape 1.
+
+With such matrices, we do get W_2 * [total_sum, 0, ..., 0]^T + b_2 = 1 * total_sum + 0 = total_sum.
+
+By doing so, we do get the correct what we want.
+
+
+
+
+Q2
+
+DeepSets model can indeed learn different representations for the four sets described in Figure 2, even though all sets have a cardinality of 2 and their elements sum to the zero vector.
+
+Indeed, each set is of the form {v, -v} (e.g., {[1, 0], [-1, 0]} or {[0, 1], [0, -1]}). The specific vector v defines the set.
+
+After passing through a Deepsets model, we get ρ( Σ_{x_i ∈ S} φ(x_i) ).
+
+However φ is a non-linear function. So φ(v) is generally not simply related to φ(-v) (e.g., φ(v) ≠ -φ(-v) and φ(v) ≠ φ(-v)). Therefore, the sum φ(v) + φ(-v) is not necessarily the same for different v vectors. 
+For instance, if v1 = [1, 0] and v3 = [0, 1]:
+For the set S1 = {v1, -v1}, the aggregated feature before the final ρ function would be φ(v1) + φ(-v1),
+whereas for the set S2 = {v3, -v3}, the aggregated feature would be φ(v3) + φ(-v3).
+
+Since φ is a learned non-linear transformation, the model can possibly learn to map v1 and -v1 to specific internal representations such that their sum φ(v1) + φ(-v1) is distinct from φ(v3) + φ(-v3). 
+However, there's nothing here that would force these sums to be identical across different defining vectors v.
+
+Hence our first assertion.

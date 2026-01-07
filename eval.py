@@ -46,7 +46,7 @@ for i in range(len(cards)):
         y_batch_np = y_test[i][j:j+batch_size]
 
         x_batch = torch.tensor(x_batch_np, dtype=torch.long).to(device)
-        # y_batch = torch.tensor(y_batch_np, dtype=torch.float32).to(device) # Not needed for prediction
+        y_batch = torch.tensor(y_batch_np, dtype=torch.float32).to(device) # Not needed for prediction
 
         with torch.no_grad():
             output_deepsets = deepsets(x_batch)
@@ -58,14 +58,12 @@ for i in range(len(cards)):
     y_pred_deepsets = torch.cat(y_pred_deepsets)
     y_pred_deepsets = y_pred_deepsets.detach().cpu().numpy()
 
-    # acc_deepsets = # Accuracy is not suitable for this regression task
     mae_deepsets = mean_absolute_error(y_test[i], y_pred_deepsets)
     results['deepsets']['mae'].append(mae_deepsets)
 
     y_pred_lstm = torch.cat(y_pred_lstm)
     y_pred_lstm = y_pred_lstm.detach().cpu().numpy()
 
-    # acc_lstm = # Accuracy is not suitable for this regression task
     mae_lstm = mean_absolute_error(y_test[i], y_pred_lstm)
     results['lstm']['mae'].append(mae_lstm)
 
@@ -74,16 +72,15 @@ for i in range(len(cards)):
 plt.figure(figsize=(12, 7))
 plt.plot(cards, results['deepsets']['mae'], label='DeepSets MAE', marker='o')
 plt.plot(cards, results['lstm']['mae'], label='LSTM MAE', marker='o')
-plt.xlabel('Number of Cards (Cardinality)')
+plt.xlabel('Number of Elements')
 plt.ylabel('Mean Absolute Error (MAE)')
 plt.title('MAE vs. Cardinality for DeepSets and LSTM')
 plt.xticks(cards)
 plt.legend()
 plt.grid(True)
 plt.show()
-
-print("\n--- Summary of Results ---")
+print()
+print("--- Summary of Results ---")
 print("Cardinality | DeepSets MAE | LSTM MAE")
-print("-----------------------------------")
 for idx, card in enumerate(cards):
     print(f"{card:<11} | {results['deepsets']['mae'][idx]:<12.4f} | {results['lstm']['mae'][idx]:<9.4f}")
